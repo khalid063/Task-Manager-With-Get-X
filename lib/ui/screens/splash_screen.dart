@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import '../../data/models/auth_utility.dart';
 import '../utils/assets_utils.dart';
 import '../widgets/screen_background.dart';
@@ -29,10 +30,21 @@ class _SplashScrenState extends State<SplashScren> {
     Future.delayed(Duration(seconds: 5)).then((_) async {
       final bool isLoggedIn = await AuthUtility.checkIfUserLoggedIn();
       if (mounted) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => isLoggedIn ? const BottomNavBaseScreen() : const LoginScreen()),  /// Tarnary operator for login or home screen
-                (route) => false);
+        /// use Get X for "Navigation"
+        Get.offAll(
+          isLoggedIn ? const BottomNavBaseScreen() : const LoginScreen(),
+        );
+
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => isLoggedIn
+        //             ? const BottomNavBaseScreen()
+        //             : const LoginScreen()),
+        //
+        //     /// Tarnary operator for login or home screen
+        //     (route) => false);
+
       }
     });
 
