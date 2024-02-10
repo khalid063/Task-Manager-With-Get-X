@@ -30,7 +30,7 @@ class _SplashScrenState extends State<SplashScren> {
     Future.delayed(Duration(seconds: 5)).then((_) async {
       final bool isLoggedIn = await AuthUtility.checkIfUserLoggedIn();
       if (mounted) {
-        /// use Get X for "Navigation"
+        /// use Get X for "Navigation" work
         Get.offAll(
           isLoggedIn ? const BottomNavBaseScreen() : const LoginScreen(),
         );
