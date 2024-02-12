@@ -32,7 +32,7 @@ class _SplashScrenState extends State<SplashScren> {
       if (mounted) {
         /// use Get X for "Navigation" work
         Get.offAll(
-          isLoggedIn ? const BottomNavBaseScreen() : const LoginScreen(),
+            () => isLoggedIn ? const BottomNavBaseScreen() : const LoginScreen(),
         );
 
         // Navigator.pushAndRemoveUntil(
