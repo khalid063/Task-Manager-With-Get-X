@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:task_managet_with_get_x/ui/screens/auth/signup_screen.dart';
+import 'package:task_managet_with_get_x/ui/state_manager/login_controller.dart';
 import '../../../data/models/auth_utility.dart';
 import '../../../data/models/login_model.dart';
 import '../../../data/models/network_response.dart';
@@ -18,50 +22,53 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
+  ///======================================== GetX Controller Instance =================================================///
+  final LoginController _loginController = Get.put(LoginController());
+
   ///======================================== All Variables ============================================================///
-  bool _loginInProgress = false;
+  // bool _loginInProgress = false;
 
   ///---------------------------------------- Text Editing Controller for taking username and pass ---------------------///
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
 
-  ///---------------------------------------- Login API call Function -------------------------------------------------///
-  Future<void> login() async{
-    _loginInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-    Map<String, dynamic> requestBody = {
-      "email": _emailTEController.text.trim(),
-      "password": _passwordTEController.text
-    };
-    final NetworkResponse response = await NetworkCaller().postRequest(Urls.login, requestBody, isLognin: true);
-    print('Response Body 999 : ${response.body}');
-    _loginInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    // Network call is End
-    if (response.isSuccess) {
-      // Login info check
-      LoginModel model = LoginModel.fromJson(response.body!);     // ! -> used for forced not null
-      print('First Name : ${model.data?.firstName}');
-      print('First lastName : ${model.data?.lastName}');
-      print('First emal : ${model.data?.email}');
-      print('First mobile : ${model.data?.mobile}');
-      await AuthUtility.saveUserInfo(model);
+  ///---------------------------------------- Login API call Function Now using GetX controller ------------------------///
+  // Future<void> login() async{
+  //   _loginInProgress = true;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //   Map<String, dynamic> requestBody = {
+  //     "email": _emailTEController.text.trim(),
+  //     "password": _passwordTEController.text
+  //   };
+  //   final NetworkResponse response = await NetworkCaller().postRequest(Urls.login, requestBody, isLognin: true);
+  //   print('Response Body 999 : ${response.body}');
+  //   _loginInProgress = false;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //   // Network call is End
+  //   if (response.isSuccess) {
+  //     // Login info check
+  //     LoginModel model = LoginModel.fromJson(response.body!);     // ! -> used for forced not null
+  //     print('First Name : ${model.data?.firstName}');
+  //     print('First lastName : ${model.data?.lastName}');
+  //     print('First emal : ${model.data?.email}');
+  //     print('First mobile : ${model.data?.mobile}');
+  //     await AuthUtility.saveUserInfo(model);
+  //
+  //     if (mounted) {
+  //       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBaseScreen()), (route) => false);
+  //     }
+  //   }else {
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect email or Password')));
+  //     }
+  //   }
+  // }
 
-      if (mounted) {
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBaseScreen()), (route) => false);
-      }
-    }else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Incorrect email or Password')));
-      }
-    }
-  }
-
-  ///======================================== Scaffold Start ========================================================///
+  ///======================================== Scaffold Start ===========================================================///
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,19 +107,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 16,),
-              ///----------------------------- Login Button is Start ---------------------------------------------///
-              SizedBox(
-                width: double.infinity,
-                child: Visibility(
-                  visible: _loginInProgress == false,
-                  replacement: const Center(child: CircularProgressIndicator(),),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      login();
-                    },
-                    child: const Icon(Icons.arrow_forward),
-                  ),
-                ),
+              ///----------------------------- Login Button is Start ---------------------------------------------///   *** Login Function is "Called" Hare
+              GetBuilder<LoginController>(
+                //builder: (myLoginController) {
+                builder: (_) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Visibility(
+                      //visible: myLoginController.loginInProgress == false,
+                      visible: _loginController.loginInProgress == false,
+                      replacement: const Center(child: CircularProgressIndicator(),),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          //login();
+                          //myLoginController.login(_emailTEController.text.trim(), _passwordTEController.text);
+                          _loginController.login(_emailTEController.text.trim(), _passwordTEController.text);
+                        },
+                        child: const Icon(Icons.arrow_forward),
+                      ),
+                    ),
+                  );
+                }
               ),
               const SizedBox(height: 24,),
               Center(
