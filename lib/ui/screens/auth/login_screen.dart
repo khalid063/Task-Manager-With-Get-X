@@ -4,11 +4,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:task_managet_with_get_x/ui/screens/auth/signup_screen.dart';
 import 'package:task_managet_with_get_x/ui/state_manager/login_controller.dart';
-import '../../../data/models/auth_utility.dart';
-import '../../../data/models/login_model.dart';
-import '../../../data/models/network_response.dart';
-import '../../../data/services/network_caller.dart';
-import '../../../data/utils/urls.dart';
 import '../../widgets/screen_background.dart';
 import '../bottom_nav_base_screen.dart';
 import '../email_verification_screen.dart';
@@ -22,11 +17,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
+
+
   ///======================================== GetX Controller Instance =================================================///
-  final LoginController _loginController = Get.put(LoginController());
+  //final LoginController _loginController = Get.put(LoginController());
+  final LoginController _loginController = Get.find<LoginController>();
 
   ///======================================== All Variables ============================================================///
-  // bool _loginInProgress = false;
+  // bool _loginInProgress = false;  // Now use 'login_controller.dart'
 
   ///---------------------------------------- Text Editing Controller for taking username and pass ---------------------///
   final TextEditingController _emailTEController = TextEditingController();
@@ -121,7 +119,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           //login();
                           //myLoginController.login(_emailTEController.text.trim(), _passwordTEController.text);
-                          _loginController.login(_emailTEController.text.trim(), _passwordTEController.text);
+                          _loginController.login(
+                              _emailTEController.text.trim(), _passwordTEController.text
+                          ).then((result) {
+                            if (result == true) {
+                              Get.offAll(const BottomNavBaseScreen());
+                            } else {
+                              Get.snackbar('Failed', 'Login Failed! Try Again.');
+                            }
+                          });
                         },
                         child: const Icon(Icons.arrow_forward),
                       ),

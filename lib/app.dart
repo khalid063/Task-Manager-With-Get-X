@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:task_managet_with_get_x/ui/screens/splash_screen.dart';
+import 'package:task_managet_with_get_x/ui/state_manager/login_controller.dart';
 
 
 class TaskManagerApp extends StatefulWidget {
@@ -18,7 +20,6 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
       navigatorKey: TaskManagerApp.globalKey,
       debugShowCheckedModeBanner: false,
       title: 'Task Manager App Practice for CRUD',
-      home: SplashScren(),
       theme: ThemeData(
           brightness: Brightness.light,
         primarySwatch: Colors.green,
@@ -52,8 +53,41 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
           brightness: Brightness.dark
       ),
       themeMode: ThemeMode.light,
+      initialBinding:  ControllerBinding(),       //*** for Bind with GetX controller
+      home: const SplashScren(),
     );
   }
 }
+
+//*** for Bind with GetX controller
+class ControllerBinding extends Bindings {
+  @override
+  void dependencies() {
+    // TODO: implement dependencies
+    Get.put(LoginController());
+  }
+
+}
+
+// login controller "Find" code
+// LoginController loginController = Get.find<LoginController>();
+
+
+//============================ Full Code =======================================//
+
+// class _LoginScreenState extends State<LoginScreen> {
+//
+//   LoginController loginController = Get.find<LoginController>();
+//
+//   ///======================================== GetX Controller Instance =================================================///
+//   final LoginController _loginController = Get.put(LoginController());
+//
+//   ///======================================== All Variables ============================================================///
+//   // bool _loginInProgress = false;  // Now use 'login_controller.dart'
+//
+//   ///---------------------------------------- Text Editing Controller for taking username and pass ---------------------///
+//   final TextEditingController _emailTEController = TextEditingController();
+//   final TextEditingController _passwordTEController = TextEditingController();
+
 
 
